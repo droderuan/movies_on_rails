@@ -1,7 +1,21 @@
 class MoviesController < ApplicationController
+  before_action :pagination_params, only: %i[ index ]
+
   def index
-    @movies = Movie.all
-    render json: @movies
+    @movies = Movie
+      .all
+      .page(params[:page] ? params[:page] : 1)
+      .per(params[:size] ? params[:size] : 20)
+
+    render json: {
+      paginated: true,
+      movies: @movies,
+      next_page: @movies.next_page,
+      prev_page: @movies.prev_page,
+      last_page: @movies.last_page?,
+      per_page: @movies.limit_value,
+      total_pages: @movies.total_pages
+    }
   end
 
   def recommendations
@@ -23,4 +37,10 @@ class MoviesController < ApplicationController
     user.rented << movie
     render json: movie
   end
+
+  private
+
+    def pagination_params
+      params.permit(:page, :size,)
+    end
 end

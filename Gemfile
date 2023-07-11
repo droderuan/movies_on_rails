@@ -7,6 +7,8 @@ gem "rails", "~> 7.0"
 
 gem 'rack-cors'
 
+gem 'kaminari'
+
 gem "sprockets-rails"
 
 gem "sqlite3", "~> 1.4"

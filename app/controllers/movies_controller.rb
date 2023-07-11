@@ -1,21 +1,16 @@
+require_relative "../../lib/middleware/standardJsonResponse"
+include ResponseStandardMiddleware
+
 class MoviesController < ApplicationController
-  before_action :pagination_params, only: %i[ index ]
+
+  before_action :pagination_params, only: %i[index]
 
   def index
-    @movies = Movie
-      .all
-      .page(params[:page] ? params[:page] : 1)
-      .per(params[:size] ? params[:size] : 20)
+    page, size = ResponseStandardMiddleware::ControllerPagination.buildPaginationParams(params)
 
-    render json: {
-      paginated: true,
-      movies: @movies,
-      next_page: @movies.next_page,
-      prev_page: @movies.prev_page,
-      last_page: @movies.last_page?,
-      per_page: @movies.limit_value,
-      total_pages: @movies.total_pages
-    }
+    @movies = Movie.all.page(page).per(size)
+
+    render json: ResponseStandardMiddleware::ControllerPagination.buildPaginatedResponse(@movies)
   end
 
   def recommendations
@@ -39,8 +34,7 @@ class MoviesController < ApplicationController
   end
 
   private
-
     def pagination_params
-      params.permit(:page, :size,)
+      params.permit(:page, :size)
     end
 end

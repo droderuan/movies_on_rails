@@ -1,7 +1,7 @@
 
 require 'json'
 
-module Middleware
+module ResponseStandardMiddleware
   class StandardJsonResponse
     def initialize(app)
       @app = app
@@ -34,7 +34,7 @@ module Middleware
       end
 
       def normalizeToPagination(body)
-        pagination_keys = ["next_page", "prev_page", "last_page", "per_page", "total_pages"]
+        pagination_keys = %w[total next_page prev_page last_page per_page total_pages]
         new_body = {}
         new_body["data"] = body.except("paginated", *pagination_keys)
         new_body[:page] = {}
@@ -46,5 +46,26 @@ module Middleware
         new_body.to_json
       end
 
+  end
+
+  class ControllerPagination
+    def self.buildPaginationParams(params)
+      page = (Integer params[:page], exception: false) || 1
+      size = (Integer params[:size], exception: false) || 20
+      [page, size]
+    end
+
+    def self.buildPaginatedResponse(modelData)
+        {
+          paginated: true,
+          modelData.name.underscore.pluralize => modelData,
+          total: modelData.count,
+          next_page: modelData.next_page,
+          prev_page: modelData.prev_page,
+          last_page: modelData.last_page?,
+          per_page: modelData.limit_value,
+          total_pages: modelData.total_pages
+        }
+    end
   end
 end

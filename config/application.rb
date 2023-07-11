@@ -13,6 +13,6 @@ module CodespacesTryRails
     config.load_defaults 7.0
     config.api_only = true
 
-    config.middleware.use Middleware::StandardJsonResponse
+    config.middleware.use ResponseStandardMiddleware::StandardJsonResponse
   end
 end

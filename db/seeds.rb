@@ -1,7 +1,7 @@
 3.times do |i|
   User.create!(name: "User#{i+1}")
 end
-  
+
 movies = [
   { title: "The Shawshank Redemption", genre: "Drama" },
   { title: "The Godfather", genre: "Crime" },
@@ -34,16 +34,17 @@ movies = [
   { title: "Die Hard", genre: "Action" },
   { title: "Mad Max: Fury Road", genre: "Action" }
 ]
-  
+
 movies.each do |movie|
   Movie.create!(
-    title: movie[:title], 
-    genre: movie[:genre], 
-    rating: rand(1.0..10.0).round(2), 
-    available_copies: rand(1..10)
+    title: movie[:title],
+    genre: movie[:genre],
+    rating: rand(1.0..10.0).round(2),
+    available_copies: rand(1..10),
+    price_per_day: rand(5.0..20.0).round(2),
   )
 end
-  
+
 User.all.each do |user|
   movies = Movie.order(Arel.sql('RANDOM()')).limit(rand(1..5))
   user.favorites << movies

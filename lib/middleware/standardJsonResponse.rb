@@ -10,7 +10,7 @@ module ResponseStandardMiddleware
     def call(env)
       status, headers, response = @app.call(env)
       begin
-        if response.respond_to? :body
+        if response.respond_to?(:body) && !response.body.empty?
           body = JSON.parse(response.body)
           if checkForPagination body
             new_body =  normalizeToPagination body

@@ -1,7 +1,3 @@
-# Movie Rental API - Technical Challenge
-
-Notes: to see my comentaries about the challenge, check [this file](CHANGES.md).
-
 ## Setup
 
 To run this project, clone the repository. You will need ruby `3.2.0` and rails installed.
